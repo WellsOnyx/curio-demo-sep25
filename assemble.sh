@@ -1,4 +1,5 @@
 #!/bin/bash
+# assemble curio static assets from chunks
 set -euo pipefail
 CSS_N=$(ls chunks/css/p*.txt 2>/dev/null | wc -l)
 JS_N=$(ls chunks/js/p*.txt 2>/dev/null | wc -l)
