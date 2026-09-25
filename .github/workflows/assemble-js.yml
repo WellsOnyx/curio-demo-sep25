@@ -1,0 +1,26 @@
+name: Assemble Curio JS
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'chunks/js/**'
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Concatenate chunks
+        run: |
+          mkdir -p assets
+          cat chunks/js/p{00..56}.txt > assets/index-CF7O1ExU.js
+          wc -c assets/index-CF7O1ExU.js
+      - name: Commit assembled bundle
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add assets/index-CF7O1ExU.js
+          git diff --staged --quiet && echo "No changes" && exit 0
+          git commit -m "Assemble assets/index-CF7O1ExU.js from chunks"
+          git push
