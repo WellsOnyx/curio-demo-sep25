@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - chunks/**
+      - assemble.sh
 permissions:
   contents: write
 jobs:
@@ -14,6 +15,13 @@ jobs:
       - run: |
           git config user.name curio-bot
           git config user.email curio@wellsonyx.com
-          git add assets/index-CBV8Q18_.css assets/index-CF7O1ExU.js
-          git diff --staged --quiet || git commit -m Assemble-assets
+          git add -f assets/index-CBV8Q18_.css assets/index-CF7O1ExU.js 2>/dev/null || true
+          # Only stage files that exist
+          [ -f assets/index-CBV8Q18_.css ] && git add assets/index-CBV8Q18_.css || true
+          [ -f assets/index-CF7O1ExU.js ] && git add assets/index-CF7O1ExU.js || true
+          if git diff --staged --quiet; then
+            echo nothing to commit
+            exit 0
+          fi
+          git commit -m Assemble-assets
           git push
